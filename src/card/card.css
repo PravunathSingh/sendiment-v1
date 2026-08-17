@@ -1,0 +1,82 @@
+.card-scene {
+  perspective: 1000px;
+  perspective-origin: center center;
+}
+
+.card {
+  position: relative;
+  width: min(88vw, 400px);
+  aspect-ratio: 5 / 3.5;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-cover {
+  background:
+    linear-gradient(145deg, #fff8f0 0%, #f5e6d3 45%, #e8d4bc 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.06),
+    0 12px 32px rgba(60, 30, 10, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-cover::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(180, 140, 100, 0.25);
+  pointer-events: none;
+}
+
+.card-inside {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, #fffdf8 0%, #faf3ea 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 24px rgba(60, 30, 10, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.card-cover-label {
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+  font-weight: 600;
+  color: #8b5a2b;
+  letter-spacing: 0.02em;
+}
+
+.card-inside-name {
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 700;
+  color: #5c3d2e;
+}
+
+.card-inside-heading {
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+  font-weight: 600;
+  color: #c45c26;
+}
+
+.card-inside-message {
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  line-height: 1.5;
+  color: #6b5344;
+  max-width: 28ch;
+}
