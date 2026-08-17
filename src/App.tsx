@@ -1,8 +1,14 @@
+import { MotionConfig } from 'motion/react';
+import BirthdayExperience from './experience/BirthdayExperience';
+import { ExperienceProvider } from './experience/ExperienceProvider';
+
 const App = () => {
   return (
-    <div className='flex min-h-dvh items-center justify-center'>
-      <h1 className='text-2xl font-semibold'>Sendiment</h1>
-    </div>
+    <MotionConfig reducedMotion='user'>
+      <ExperienceProvider>
+        <BirthdayExperience />
+      </ExperienceProvider>
+    </MotionConfig>
   );
 };
 

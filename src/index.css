@@ -1,1 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
+
 @import 'tailwindcss';
+
+@theme {
+  --font-display: 'Fraunces', serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+
+  --color-sendiment-bg-deep: #1a1028;
+  --color-sendiment-bg-mid: #2d1b3d;
+  --color-sendiment-amber: #fbbf24;
+  --color-sendiment-amber-glow: #f59e0b;
+  --color-sendiment-amber-dark: #78350f;
+  --color-sendiment-cream: #fef3c7;
+  --color-sendiment-coral: #f87171;
+  --color-sendiment-gold: #d4a054;
+  --color-sendiment-sky: #7dd3fc;
+  --color-sendiment-lavender: #c4b5fd;
+  --color-sendiment-mint: #6ee7b7;
+  --color-sendiment-candle-wax: #7b020b;
+  --color-sendiment-cake-icing: #f8c8dc;
+  --color-sendiment-cake-base: #e8a0b8;
+  --color-sendiment-cake-tier: #c97b9a;
+
+  --shadow-sendiment-glow: 0 0 40px rgb(251 191 36 / 0.25);
+  --shadow-sendiment-card: 0 20px 60px rgb(0 0 0 / 0.35);
+  --shadow-sendiment-cta: 0 8px 32px rgb(245 158 11 / 0.3);
+}
+
+:root {
+  --z-background: 0;
+  --z-scene: 10;
+  --z-foreground: 20;
+  --z-confetti: 30;
+  --z-interaction: 40;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
