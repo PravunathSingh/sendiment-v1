@@ -1,0 +1,5 @@
+- create cake and candle layout
+- manage candle on off state
+- capture voice command to turn on/off candle -> blowing candle
+- update view to card
+- open card show message
