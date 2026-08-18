@@ -93,6 +93,10 @@ export class MicrophoneCapture {
         await this.audioContext.resume();
       }
 
+      if (this.audioContext.state !== 'running') {
+        throw new MediaAudioError('AUDIO_CONTEXT_FAILED');
+      }
+
       this.sourceNode = this.audioContext.createMediaStreamSource(this.stream);
 
       this.analyserNode = this.audioContext.createAnalyser();
