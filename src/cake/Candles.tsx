@@ -1,19 +1,25 @@
 import {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from 'react';
+import { TIMELINES } from '../experience/timelines';
+import Candle from './Candle';
 import type { CandleLayout, CandlePosition } from './useCandleLayout';
 
 interface CandleState {
   id: string;
   isLit: boolean;
+  staggerMs: number;
 }
 
 interface CandlesProps {
   layout: CandleLayout;
+  ignited: boolean;
+  reducedMotion: boolean;
+  interactive: boolean;
   onLitCountChange?: (litCount: number) => void;
 }
 
@@ -32,103 +38,90 @@ function createInitialState(positions: CandlePosition[]): CandleState[] {
   return positions.map((position) => ({
     id: position.id,
     isLit: true,
+    staggerMs: 0,
   }));
 }
 
+function countLit(state: CandleState[]): number {
+  return state.reduce((total, candle) => total + (candle.isLit ? 1 : 0), 0);
+}
+
 const Candles = forwardRef<CandlesHandle, CandlesProps>(
-  ({ layout, onLitCountChange }, ref) => {
+  (
+    { layout, ignited, reducedMotion, interactive, onLitCountChange },
+    ref,
+  ) => {
     const positionMap = useMemo(
-      () => new Map(layout.positions.map((position) => [position.id, position])),
+      () =>
+        new Map(layout.positions.map((position) => [position.id, position])),
       [layout.positions],
     );
 
     const [candleState, setCandleState] = useState<CandleState[]>(() =>
       createInitialState(layout.positions),
     );
+    const candleStateRef = useRef(candleState);
+
+    const commitState = (next: CandleState[]) => {
+      candleStateRef.current = next;
+      setCandleState(next);
+      onLitCountChange?.(countLit(next));
+    };
 
     const blowOutCandle = (id: string) => {
-      setCandleState((prev) =>
-        prev.map((candle) =>
-          candle.id === id && candle.isLit
-            ? { ...candle, isLit: false }
-            : candle,
-        ),
+      const next = candleStateRef.current.map((candle) =>
+        candle.id === id && candle.isLit
+          ? { ...candle, isLit: false, staggerMs: 0 }
+          : candle,
       );
+      commitState(next);
     };
 
     const blowOutNextNCandles = (count: number): number => {
       let blown = 0;
-
-      setCandleState((prev) => {
-        const next = [...prev];
-        for (let index = 0; index < next.length && blown < count; index += 1) {
-          if (next[index]?.isLit) {
-            next[index] = { ...next[index], isLit: false };
-            blown += 1;
-          }
+      const next = candleStateRef.current.map((candle) => {
+        if (candle.isLit && blown < count) {
+          const staggerMs = blown * TIMELINES.blowing.blowStaggerMs;
+          blown += 1;
+          return { ...candle, isLit: false, staggerMs };
         }
-        return next;
+        return candle;
       });
-
+      commitState(next);
       return blown;
     };
 
-    const blowOutNextLitCandle = (): boolean =>
-      blowOutNextNCandles(1) > 0;
-
-    const litCount = candleState.filter((candle) => candle.isLit).length;
-
-    useEffect(() => {
-      onLitCountChange?.(litCount);
-    }, [litCount, onLitCountChange]);
+    const blowOutNextLitCandle = (): boolean => blowOutNextNCandles(1) > 0;
 
     useImperativeHandle(ref, () => ({
       blowOutNextLitCandle,
       blowOutNextNCandles,
       blowOutCandle,
-      litCount,
+      get litCount() {
+        return countLit(candleStateRef.current);
+      },
     }));
 
     return (
-      <div className='relative w-full h-20'>
-        {candleState.map(({ id, isLit }) => {
+      <div className='pointer-events-none absolute inset-0'>
+        {candleState.map(({ id, isLit, staggerMs }, index) => {
           const position = positionMap.get(id);
           if (!position) {
             return null;
           }
 
           return (
-            <div
+            <Candle
               key={id}
-              role='button'
-              tabIndex={0}
-              onClick={() => blowOutCandle(id)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  blowOutCandle(id);
-                }
-              }}
-              className='absolute -translate-x-1/2 -translate-y-full'
-              style={{
-                left: `${position.xPercent}%`,
-                top: `${position.yPercent}%`,
-              }}
-            >
-              <div
-                className={`w-2 h-8 rounded-sm border transition-opacity duration-300 ${
-                  isLit
-                    ? 'bg-[#7B020B] border-[#5a0108] opacity-100'
-                    : 'bg-[#9a6a6e] border-[#7a4a4e] opacity-70'
-                }`}
-              >
-                {isLit && (
-                  <div
-                    className='absolute -top-2 left-1/2 -translate-x-1/2 w-1.5 h-3 rounded-full bg-orange-400 shadow-[0_0_6px_2px_rgba(255,140,0,0.6)]'
-                    aria-hidden
-                  />
-                )}
-              </div>
-            </div>
+              position={position}
+              index={index}
+              isLit={isLit}
+              staggerMs={staggerMs}
+              ignited={ignited}
+              reducedMotion={reducedMotion}
+              interactive={interactive}
+              onBlowOut={blowOutCandle}
+            />
           );
         })}
       </div>

@@ -1,59 +1,57 @@
-import { motion, useReducedMotion } from 'motion/react';
-import { useRef } from 'react';
-import { birthdayData } from '../data/birthdayData';
+import { motion } from 'motion/react';
+import { cardCoverVariants } from '../animation/variants';
+import BirthdayMessage from './BirthdayMessage';
+import CardCover from './CardCover';
+import CardInside from './CardInside';
 import './card.css';
 
 interface BirthdayCardProps {
-  isOpen?: boolean;
-  onOpenComplete?: () => void;
+  isOpen: boolean;
+  isOpening: boolean;
+  reducedMotion: boolean;
+  recipientName: string;
+  message: string;
+  revealMessage: boolean;
 }
 
-const BirthdayCard = ({ isOpen = false, onOpenComplete }: BirthdayCardProps) => {
-  const prefersReducedMotion = useReducedMotion();
-  const hasReportedOpenRef = useRef(false);
-
-  const closedRotation = prefersReducedMotion ? 0 : -12;
-  const openRotation = prefersReducedMotion ? 0 : -155;
-  const targetRotation = isOpen ? openRotation : closedRotation;
+const BirthdayCard = ({
+  isOpen,
+  isOpening,
+  reducedMotion,
+  recipientName,
+  message,
+  revealMessage,
+}: BirthdayCardProps) => {
+  const monogram = recipientName.trim().charAt(0).toUpperCase() || 'S';
 
   return (
-    <div className='card-scene flex items-center justify-center'>
+    <div
+      className={[
+        'birthday-card',
+        isOpening ? 'birthday-card--opening' : '',
+      ].join(' ')}
+    >
+      <CardInside hidden={!isOpen}>
+        <BirthdayMessage
+          recipientName={recipientName}
+          message={message}
+          visible={revealMessage}
+          reducedMotion={reducedMotion}
+        />
+      </CardInside>
+
       <motion.div
-        className='card'
-        initial={{ rotateY: closedRotation, opacity: 0, y: 40 }}
-        animate={{
-          rotateY: targetRotation,
-          opacity: isOpen || !prefersReducedMotion ? 1 : 0,
-          y: 0,
-        }}
-        transition={{
-          rotateY: { type: 'spring', stiffness: 80, damping: 18, duration: 1.2 },
-          opacity: { duration: 0.5 },
-          y: { type: 'spring', stiffness: 120, damping: 20 },
-        }}
-        onAnimationComplete={() => {
-          if (isOpen && !hasReportedOpenRef.current) {
-            hasReportedOpenRef.current = true;
-            onOpenComplete?.();
-          }
-        }}
+        className={['card-cover', isOpen ? 'card-cover--open' : ''].join(' ')}
+        variants={cardCoverVariants(reducedMotion)}
+        initial='closed'
+        animate={isOpen ? 'open' : 'closed'}
+        aria-hidden={isOpen}
         style={{
           transformOrigin: 'left center',
+          transformStyle: 'preserve-3d',
         }}
       >
-        <div className='card-face card-cover' aria-hidden={isOpen}>
-          <span className='card-cover-label'>For You</span>
-        </div>
-
-        <div
-          className='card-face card-inside'
-          aria-hidden={!isOpen}
-          style={prefersReducedMotion && !isOpen ? { opacity: 0 } : undefined}
-        >
-          <p className='card-inside-name'>{birthdayData.recipientName}</p>
-          <p className='card-inside-heading'>Happy Birthday</p>
-          <p className='card-inside-message'>{birthdayData.message}</p>
-        </div>
+        <CardCover monogram={monogram} hidden={isOpen} />
       </motion.div>
     </div>
   );

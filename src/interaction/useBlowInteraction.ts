@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
 import type { VolumeLevel } from '../audio/types';
 import type { CandlesHandle } from '../cake/Candles';
+import { TIMELINES } from '../experience/timelines';
 
 export type InteractionMode = 'microphone' | 'tap-hold';
 
-const TAP_HOLD_INTERVAL_MS = 400;
 const STRONG_BLOW_THRESHOLD = 0.22;
 
 export function candlesPerBlow(volume: VolumeLevel): number {
@@ -29,6 +29,7 @@ export function useBlowInteraction({
   onAllCandlesOut,
 }: UseBlowInteractionOptions) {
   const holdIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastBlowRef = useRef(0);
   const onAllCandlesOutRef = useRef(onAllCandlesOut);
   const onBlowRef = useRef(onBlow);
 
@@ -38,6 +39,12 @@ export function useBlowInteraction({
   }, [onAllCandlesOut, onBlow]);
 
   const extinguishCandles = useCallback((count: number) => {
+    const now = Date.now();
+    if (now - lastBlowRef.current < TIMELINES.blowing.tapHoldInterval) {
+      return 0;
+    }
+
+    lastBlowRef.current = now;
     const blown = candlesRef.current?.blowOutNextNCandles(count) ?? 0;
     if (blown > 0) {
       onBlowRef.current?.(blown);
@@ -58,8 +65,15 @@ export function useBlowInteraction({
     extinguishCandles(candlesPerBlow(volume));
   }, [enabled, extinguishCandles, interactionMode, volume]);
 
+  const stopTapHold = useCallback(() => {
+    if (holdIntervalRef.current) {
+      clearInterval(holdIntervalRef.current);
+      holdIntervalRef.current = null;
+    }
+  }, []);
+
   const startTapHold = useCallback(() => {
-    if (!enabled || interactionMode !== 'tap-hold') {
+    if (!enabled) {
       return;
     }
 
@@ -67,16 +81,19 @@ export function useBlowInteraction({
       extinguishCandles(candlesPerBlow(0.3));
     };
 
+    stopTapHold();
     blow();
-    holdIntervalRef.current = setInterval(blow, TAP_HOLD_INTERVAL_MS);
-  }, [enabled, extinguishCandles, interactionMode]);
+    holdIntervalRef.current = setInterval(
+      blow,
+      TIMELINES.blowing.tapHoldInterval,
+    );
+  }, [enabled, extinguishCandles, stopTapHold]);
 
-  const stopTapHold = useCallback(() => {
-    if (holdIntervalRef.current) {
-      clearInterval(holdIntervalRef.current);
-      holdIntervalRef.current = null;
+  useEffect(() => {
+    if (!enabled) {
+      stopTapHold();
     }
-  }, []);
+  }, [enabled, stopTapHold]);
 
   useEffect(() => {
     return () => stopTapHold();

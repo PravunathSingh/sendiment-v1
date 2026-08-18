@@ -21,12 +21,12 @@ export interface CandleLayout {
   positions: CandlePosition[];
 }
 
-function singleRowPositions(count: number, yPercent = 50): CandlePosition[] {
+function singleRowPositions(count: number, yPercent = 52): CandlePosition[] {
   if (count === 0) {
     return [];
   }
 
-  const span = Math.min(80, count * 8 + 10);
+  const span = Math.min(78, count * 10 + 12);
   const start = 50 - span / 2;
 
   return Array.from({ length: count }, (_, index) => {
@@ -68,8 +68,8 @@ function staggeredPositions(count: number): CandlePosition[] {
 function arcPositions(count: number): CandlePosition[] {
   return Array.from({ length: count }, (_, index) => {
     const t = count === 1 ? 0.5 : index / (count - 1);
-    const xPercent = 15 + t * 70;
-    const yPercent = 55 - Math.sin(t * Math.PI) * 18;
+    const xPercent = 12 + t * 76;
+    const yPercent = 58 - Math.sin(t * Math.PI) * 16;
     return { id: `candle-${index}`, xPercent, yPercent };
   });
 }
