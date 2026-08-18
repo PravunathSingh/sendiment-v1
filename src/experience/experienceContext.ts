@@ -1,8 +1,8 @@
 import { createContext } from 'react';
-import { birthdayData } from '../data/birthdayData';
+import type { BirthdayData } from '../data/birthdayData';
 import type { ExperienceAction, ExperienceStage } from './types';
 
-export type BirthdayData = typeof birthdayData;
+export type { BirthdayData };
 
 export interface ExperienceContextValue {
   stage: ExperienceStage;
