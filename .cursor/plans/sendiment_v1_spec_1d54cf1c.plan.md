@@ -10,25 +10,25 @@ todos:
     status: completed
   - id: phase3-intro
     content: 'Implement IntroScene: StartButton requests mic + START_EXPERIENCE on single tap, entry timeline'
-    status: pending
+    status: completed
   - id: phase4-cake
     content: 'Build CakeScene: CSS cake tiers, tiered candle layout + AgeTopper, flame/smoke, mic on intro + tap-hold fallback, 3-4 candles per blow'
-    status: pending
+    status: completed
   - id: phase5-celebration
     content: Implement CelebrationScene with canvas-confetti burst, sparkles, cake exit transition
-    status: pending
+    status: completed
   - id: phase6-card
     content: Build CSS 3D BirthdayCard with reveal entrance and hinge open animation
-    status: pending
+    status: completed
   - id: phase7-balloons
     content: Create CSS gradient Balloon components with left-weighted layout and float animation
-    status: pending
+    status: completed
   - id: phase8-message
     content: Implement BirthdayMessage stagger reveal, aria-live announcements, and card open/close replay control
-    status: pending
+    status: completed
   - id: phase9-12-polish
     content: Polish timing/responsive, accessibility fallbacks, performance profiling, manual QA matrix
-    status: pending
+    status: completed
 isProject: false
 ---
 
