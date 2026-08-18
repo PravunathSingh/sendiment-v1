@@ -135,7 +135,7 @@ const CakeScene = ({
   return (
     <motion.section
       className={[
-        'absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 sm:gap-6',
+        'absolute inset-0 flex flex-col items-center justify-center gap-8 px-4 sm:gap-10',
         stage === 'celebration' ? 'pointer-events-none' : '',
       ].join(' ')}
       style={{

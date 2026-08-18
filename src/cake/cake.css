@@ -6,6 +6,7 @@
   --flame-h: 46px;
   width: var(--cake-w);
   max-height: 78dvh;
+  padding-bottom: 2.25rem;
   overflow: visible;
   contain: layout;
 }

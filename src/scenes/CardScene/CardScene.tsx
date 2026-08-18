@@ -84,7 +84,12 @@ const CardScene = () => {
         },
       }}
     >
-      <div className='card-stage'>
+      <div
+        className={[
+          'card-stage',
+          !reducedMotion && (cardOpen || isOpening) ? 'card-stage--spread' : '',
+        ].join(' ')}
+      >
         <Balloons visible={showBalloons} reducedMotion={reducedMotion} />
         <div className='card-ground-shadow' aria-hidden />
         <div className='card-scene'>
