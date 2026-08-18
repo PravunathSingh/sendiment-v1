@@ -1,39 +1,61 @@
 import { useEffect, useRef } from 'react';
 import type { ExperienceStage } from './types';
 
-const STAGE_ANNOUNCEMENTS: Partial<Record<ExperienceStage, string>> = {
-  'cake-enter': 'Birthday cake appearing.',
-  blowing: 'Blow out the candles on the cake.',
-  celebration: 'Celebration time!',
-  'card-reveal': 'A birthday card is arriving.',
-  'card-opening': 'Opening the card.',
-  'card-open': 'Balloons floating in.',
-  message: 'Birthday message revealed.',
-  complete: 'Birthday surprise complete.',
-};
+function getStageAnnouncement(
+  stage: ExperienceStage,
+  recipientName: string,
+  message: string,
+): string {
+  switch (stage) {
+    case 'intro':
+      return `Someone made something special for ${recipientName}. Start the surprise when you are ready.`;
+    case 'cake-enter':
+      return `Birthday cake appearing for ${recipientName}.`;
+    case 'blowing':
+      return `Blow out the candles on ${recipientName}'s cake. Blow into the microphone, tap and hold the cake, or select a candle.`;
+    case 'celebration':
+      return `Celebration time for ${recipientName}!`;
+    case 'card-reveal':
+      return `A birthday card for ${recipientName} is arriving.`;
+    case 'card-opening':
+      return `Opening ${recipientName}'s birthday card.`;
+    case 'card-open':
+      return 'Balloons floating in.';
+    case 'message':
+      return `Birthday message for ${recipientName}. Happy Birthday. ${message}`;
+    case 'complete':
+      return `Birthday surprise complete for ${recipientName}. Replay card opening is available.`;
+  }
+}
 
 interface ScreenReaderAnnouncerProps {
   stage: ExperienceStage;
   recipientName: string;
+  message: string;
 }
 
 const ScreenReaderAnnouncer = ({
   stage,
   recipientName,
+  message,
 }: ScreenReaderAnnouncerProps) => {
   const announcementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const message = STAGE_ANNOUNCEMENTS[stage];
-    if (!message || !announcementRef.current) {
+    const node = announcementRef.current;
+    if (!node) {
       return;
     }
 
-    announcementRef.current.textContent =
-      stage === 'message' || stage === 'complete'
-        ? `${message} Happy birthday, ${recipientName}.`
-        : message;
-  }, [stage, recipientName]);
+    const next = getStageAnnouncement(stage, recipientName, message);
+    node.textContent = '';
+
+    const frame = window.requestAnimationFrame(() => {
+      node.textContent = next;
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [stage, recipientName, message]);
 
   return (
     <div
