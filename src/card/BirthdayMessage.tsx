@@ -3,10 +3,7 @@ import {
   messageItemVariants,
   messageSparkleVariants,
 } from '../animation/variants';
-import {
-  delayFromMessageStage,
-  TIMELINES,
-} from '../experience/timelines';
+import { delayFromMessageStage, TIMELINES } from '../experience/timelines';
 
 interface BirthdayMessageProps {
   recipientName: string;
@@ -22,7 +19,9 @@ const BirthdayMessage = ({
   reducedMotion,
 }: BirthdayMessageProps) => {
   const pose = visible ? 'visible' : 'hidden';
-  const sparkleDelay = delayFromMessageStage(TIMELINES.cardOpen.balloonsSettled);
+  const sparkleDelay = delayFromMessageStage(
+    TIMELINES.cardOpen.balloonsSettled,
+  );
   const nameDelay = delayFromMessageStage(TIMELINES.cardOpen.nameReveal);
   const headingDelay = delayFromMessageStage(TIMELINES.cardOpen.headingReveal);
   const bodyDelay = delayFromMessageStage(TIMELINES.cardOpen.messageReveal);
@@ -42,7 +41,7 @@ const BirthdayMessage = ({
         initial='hidden'
         animate={pose}
       >
-        {recipientName}
+        Hi {recipientName}
       </motion.p>
       <motion.h1
         className='card-inside-heading'
@@ -50,7 +49,7 @@ const BirthdayMessage = ({
         initial='hidden'
         animate={pose}
       >
-        Happy Birthday
+        Happpyyyy Birthdayyyyyy 🥳
       </motion.h1>
       <motion.p
         className='card-inside-message'

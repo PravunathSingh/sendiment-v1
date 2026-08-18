@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import {
   introHeadlineVariants,
-  introSublineVariants,
+  // introSublineVariants,
 } from '../../animation/variants';
 
 const HEADLINE_ID = 'intro-headline';
@@ -12,7 +12,7 @@ const IntroCopy = () => {
   const reducedMotion = Boolean(prefersReducedMotion);
 
   return (
-    <div className='relative max-w-md space-y-5'>
+    <div className='relative max-w-xl space-y-5'>
       <motion.h1
         id={HEADLINE_ID}
         className='font-display text-3xl font-semibold leading-[1.15] text-balance text-sendiment-cream sm:text-4xl md:text-5xl'
@@ -20,10 +20,11 @@ const IntroCopy = () => {
         initial='initial'
         animate='animate'
       >
-        Someone made something special for you…
+        Another year round the sun, huh? Well, here's something to celebrate
+        that
       </motion.h1>
 
-      <motion.div
+      {/* <motion.div
         className='flex flex-col items-center gap-4'
         variants={introSublineVariants(reducedMotion)}
         initial='initial'
@@ -39,7 +40,7 @@ const IntroCopy = () => {
         >
           We&apos;ll listen for you blowing — nothing is recorded.
         </p>
-      </motion.div>
+      </motion.div> */}
     </div>
   );
 };
