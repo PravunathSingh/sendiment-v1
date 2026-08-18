@@ -6,8 +6,8 @@
   --font-display: 'Fraunces', serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
 
-  --color-sendiment-bg-deep: #1a1028;
-  --color-sendiment-bg-mid: #2d1b3d;
+  --color-sendiment-bg-deep: #140c0a;
+  --color-sendiment-bg-mid: #2a1812;
   --color-sendiment-amber: #fbbf24;
   --color-sendiment-amber-glow: #f59e0b;
   --color-sendiment-amber-dark: #78350f;
@@ -33,12 +33,32 @@
   --z-foreground: 20;
   --z-confetti: 30;
   --z-interaction: 40;
+  --z-dev: 50;
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-card-hinge: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100dvh;
+  overflow: hidden;
 }
 
 body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-sendiment-cream);
+  outline-offset: 3px;
 }
 
 h1,
