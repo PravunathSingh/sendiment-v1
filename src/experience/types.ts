@@ -17,7 +17,20 @@ export type ExperienceAction =
   | { type: 'CARD_SETTLED' }
   | { type: 'CARD_OPEN_COMPLETE' }
   | { type: 'BALLOONS_SETTLED' }
-  | { type: 'MESSAGE_REVEAL_COMPLETE' };
+  | { type: 'MESSAGE_REVEAL_COMPLETE' }
+  | { type: 'DEV_JUMP_TO_STAGE'; stage: ExperienceStage };
+
+export const EXPERIENCE_STAGES: ExperienceStage[] = [
+  'intro',
+  'cake-enter',
+  'blowing',
+  'celebration',
+  'card-reveal',
+  'card-opening',
+  'card-open',
+  'message',
+  'complete',
+];
 
 export type MicStatus =
   | 'idle'

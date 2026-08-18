@@ -22,6 +22,10 @@ function experienceReducer(
   stage: ExperienceStage,
   action: ExperienceAction,
 ): ExperienceStage {
+  if (action.type === 'DEV_JUMP_TO_STAGE') {
+    return action.stage;
+  }
+
   const nextStage = TRANSITIONS[stage][action.type];
   return nextStage ?? stage;
 }
