@@ -1,0 +1,75 @@
+.celebration-sparkle {
+  position: absolute;
+  background: #fef3c7;
+  clip-path: polygon(
+    50% 0%,
+    62% 38%,
+    100% 50%,
+    62% 62%,
+    50% 100%,
+    38% 62%,
+    0% 50%,
+    38% 38%
+  );
+  filter: drop-shadow(0 0 5px rgb(251 191 36 / 0.85));
+  animation: celebration-sparkle 0.7s ease-out both;
+  pointer-events: none;
+}
+
+.celebration-smoke {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 30px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    rgb(220 220 228 / 0.42),
+    transparent 72%
+  );
+  filter: blur(7px);
+  pointer-events: none;
+  animation: celebration-smoke-rise 0.9s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebration-sparkle,
+  .celebration-smoke {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@keyframes celebration-sparkle {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.45) rotate(0deg);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(18deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7) rotate(-8deg);
+  }
+}
+
+@keyframes celebration-smoke-rise {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.7);
+  }
+
+  30% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -36px) scale(1.45);
+  }
+}

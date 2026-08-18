@@ -1,62 +1,36 @@
+import { useCallback, useEffect, useRef, type RefObject } from 'react';
 import { useReducedMotion } from 'motion/react';
-import { useCallback, useRef } from 'react';
 import type confetti from 'canvas-confetti';
+import { fireCelebrationBurst } from '../celebration/confetti';
 
 /**
- * Lazy-loads canvas-confetti on demand and respects reduced-motion preferences.
+ * Lazy-loads canvas-confetti onto a scene canvas and skips bursts when
+ * the user prefers reduced motion.
  */
-export function useConfetti() {
+export function useConfetti(
+  canvasRef: RefObject<HTMLCanvasElement | null>,
+) {
   const prefersReducedMotion = useReducedMotion();
-  const confettiRef = useRef<typeof confetti | null>(null);
-  const loadingRef = useRef<Promise<void> | null>(null);
+  const instanceRef = useRef<confetti.CreateTypes | null>(null);
 
-  const loadConfetti = useCallback(async () => {
-    if (confettiRef.current) {
-      return confettiRef.current;
+  const fireBurst = useCallback(async () => {
+    if (prefersReducedMotion || !canvasRef.current) {
+      return false;
     }
 
-    if (!loadingRef.current) {
-      loadingRef.current = import('canvas-confetti').then((module) => {
-        confettiRef.current = module.default ?? (module as unknown as typeof confetti);
-      });
-    }
+    instanceRef.current = await fireCelebrationBurst(canvasRef.current);
+    return true;
+  }, [canvasRef, prefersReducedMotion]);
 
-    await loadingRef.current;
-    return confettiRef.current!;
+  useEffect(() => {
+    return () => {
+      instanceRef.current?.reset();
+      instanceRef.current = null;
+    };
   }, []);
-
-  const fireBurst = useCallback(
-    async (options?: { particleCount?: number }) => {
-      if (prefersReducedMotion) {
-        return false;
-      }
-
-      const fire = await loadConfetti();
-      const isMobile = window.matchMedia('(max-width: 640px)').matches;
-      const particleCount =
-        options?.particleCount ?? (isMobile ? 80 : 150);
-
-      fire({
-        particleCount: Math.round(particleCount * 0.6),
-        spread: 70,
-        origin: { x: 0.5, y: 0.55 },
-        disableForReducedMotion: true,
-      });
-
-      fire({
-        particleCount: Math.round(particleCount * 0.4),
-        spread: 50,
-        origin: { x: 0.5, y: 0.25 },
-        disableForReducedMotion: true,
-      });
-
-      return true;
-    },
-    [loadConfetti, prefersReducedMotion],
-  );
 
   return {
     fireBurst,
-    prefersReducedMotion,
+    prefersReducedMotion: Boolean(prefersReducedMotion),
   };
 }
